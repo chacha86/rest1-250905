@@ -11,4 +11,10 @@ public class RsData<T> {
     private String msg;
     private T data;
 
+    public RsData(String resultCode, String msg) {
+        this.resultCode = resultCode;
+        this.msg = msg;
+        this.data = null;
+    }
+
 }

@@ -16,6 +16,7 @@ public class PostService {
 
     public Post write(String title, String content) {
         Post post = new Post(title, content);
+
         return postRepository.save(post);
     }
 

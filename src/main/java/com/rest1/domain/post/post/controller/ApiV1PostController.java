@@ -23,7 +23,7 @@ public class ApiV1PostController {
     @GetMapping
     @Transactional(readOnly = true)
     public List<PostDto> getItems() {
-        return postService.findAll().stream()
+        return postService.findAllLatest().stream()
                 .map(PostDto::new)
                 .toList();
     }
@@ -45,12 +45,12 @@ public class ApiV1PostController {
         postService.delete(post);
 
         return new RsData<Void>(
-                "204-1",
-                "%d번 게시물이 삭제되었습니다.".formatted(id)
+                "200-1",
+                "%d번 글이 삭제되었습니다.".formatted(id)
         );
     }
 
-    record PostWriteForm(
+    record PostWriteReqBody(
             @NotBlank
             @Size(min = 2, max = 10)
             String title,
@@ -61,15 +61,35 @@ public class ApiV1PostController {
     }
 
     @PostMapping
-    public RsData<PostDto> createItem(
-            @RequestBody @Valid PostWriteForm form
+    public RsData<PostDto> write(
+            @RequestBody @Valid PostWriteReqBody reqBody
     ) {
 
-        Post post = postService.write(form.title, form.content);
+        Post post = postService.write(reqBody.title, reqBody.content);
         return new RsData<>(
                 "201-1",
-                "%d번 게시물이 생성되었습니다.".formatted(post.getId()),
+                "%d번 글이 생성되었습니다.".formatted(post.getId()),
                 new PostDto(post)
+        );
+    }
+
+    record PostModifyReqBody(
+            String title,
+            String content
+    ) {}
+
+    @PutMapping("/{id}")
+    @Transactional
+    public RsData<Void> modify(
+            @PathVariable Long id,
+            @RequestBody PostModifyReqBody reqBody
+    ) {
+        Post post = postService.findById(id).get();
+        postService.modify(post, reqBody.title, reqBody.content);
+
+        return new RsData<>(
+                "200-1",
+                "%d번 글이 수정되었습니다.".formatted(id)
         );
     }
 

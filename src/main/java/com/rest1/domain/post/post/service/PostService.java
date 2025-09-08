@@ -51,4 +51,8 @@ public class PostService {
     public void delete(Post post) {
         postRepository.delete(post);
     }
+
+    public List<Post> findAllLatest() {
+        return findAll().reversed();
+    }
 }

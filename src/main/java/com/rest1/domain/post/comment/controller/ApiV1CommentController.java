@@ -50,11 +50,14 @@ public class ApiV1CommentController {
     ) {
 
         Post post = postService.findById(postId).get();
+        Comment comment = post.findCommentById(commentId).get();
+
         postService.deleteComment(post, commentId);
 
         return new RsData(
                 "204-1",
-                "%d번 댓글이 삭제되었습니다.".formatted(commentId)
+                "%d번 댓글이 삭제되었습니다.".formatted(commentId),
+                new CommentDto(comment)
         );
     }
 

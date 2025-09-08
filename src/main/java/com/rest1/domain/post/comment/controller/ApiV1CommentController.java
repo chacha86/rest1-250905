@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class ApiV1CommentController {
 
     @GetMapping("/{postId}/comments/{commentId}/delete")
     @Transactional
-    public String deleteItem(
+    public Map<String, Object> deleteItem(
             @PathVariable Long postId,
             @PathVariable Long commentId
     ) {
@@ -51,6 +52,11 @@ public class ApiV1CommentController {
         Post post = postService.findById(postId).get();
         postService.deleteComment(post, commentId);
 
-        return "%d번 댓글이 삭제되었습니다.".formatted(commentId);
+        Map<String, Object> result = Map.of(
+                "resultCode", "204-1",
+                "message", "%d번 댓글이 삭제되었습니다.".formatted(commentId)
+        );
+
+        return result;
     }
 }

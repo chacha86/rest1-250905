@@ -5,6 +5,9 @@ import com.rest1.domain.post.comment.entity.Comment;
 import com.rest1.domain.post.post.entity.Post;
 import com.rest1.domain.post.post.service.PostService;
 import com.rest1.global.rsData.RsData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +55,37 @@ public class ApiV1CommentController {
         return new RsData<>(
                 "200-1",
                 "%d번 댓글이 삭제되었습니다.".formatted(commentId)
+        );
+    }
+
+
+    record CommentWriteReqBody(
+            @NotBlank
+            @Size(min = 2, max = 100)
+            String content
+    ) {
+    }
+
+    record CommentWriteResBody(
+            CommentDto commentDto
+    ) {}
+
+    @PostMapping("/{postId}/comments")
+    @Transactional
+    public RsData<CommentWriteResBody> createItem(
+            @PathVariable Long postId,
+            @RequestBody @Valid CommentWriteReqBody reqBody
+    ) {
+
+        Post post = postService.findById(postId).get();
+        Comment comment = postService.writeComment(post, reqBody.content);
+
+        return new RsData<>(
+                "201-1",
+                "%d번 게시물이 생성되었습니다.".formatted(post.getId()),
+                new CommentWriteResBody(
+                        new  CommentDto(comment)
+                )
         );
     }
 

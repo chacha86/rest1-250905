@@ -48,7 +48,7 @@ public class ApiV1PostController {
         postService.delete(post);
 
         return new RsData<Void>(
-                "204-1",
+                "200-1",
                 "%d번 게시물이 삭제되었습니다.".formatted(id)
         );
     }

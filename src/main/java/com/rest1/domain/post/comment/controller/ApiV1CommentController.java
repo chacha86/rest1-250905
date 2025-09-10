@@ -26,7 +26,7 @@ public class ApiV1CommentController {
             @PathVariable Long postId
     ) {
         Post post = postService.findById(postId).get();
-        return post.getComments().stream()
+        return post.getComments().reversed().stream()
                 .map(CommentDto::new)
                 .toList();
     }

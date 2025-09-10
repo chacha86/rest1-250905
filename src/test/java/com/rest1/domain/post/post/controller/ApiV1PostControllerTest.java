@@ -207,4 +207,31 @@ public class ApiV1PostControllerTest {
                 .andExpect(status().isNotFound());
 
     }
+
+    @Test
+    @DisplayName("글 작성, 제목이 입력되지 않은 경우")
+    void t7() throws Exception {
+        String title = "";
+        String content = "내용입니다";
+
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/posts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "title": "%s",
+                                            "content": "%s"
+                                        }
+                                        """.formatted(title, content))
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("createItem"))
+                .andExpect(status().isCreated());
+
+
+    }
 }

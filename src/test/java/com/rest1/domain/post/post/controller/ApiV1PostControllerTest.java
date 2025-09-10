@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -46,8 +45,31 @@ public class ApiV1PostControllerTest {
     }
 
     @Test
-    @DisplayName("글 생성")
+    @DisplayName("글 단건 조회")
     void t2() throws Exception {
+
+        long targetId = 1;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/api/v1/posts/%d".formatted(targetId))
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("getItem"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.createDate").exists())
+                .andExpect(jsonPath("$.modifyDate").exists())
+                .andExpect(jsonPath("$.title").value("제목1"))
+                .andExpect(jsonPath("$.content").value("내용1"));
+    }
+
+    @Test
+    @DisplayName("글 생성")
+    void t3() throws Exception {
         String title = "제목입니다";
         String content = "내용입니다";
 
@@ -71,7 +93,7 @@ public class ApiV1PostControllerTest {
 
     @Test
     @DisplayName("글 수정")
-    void t3() throws Exception {
+    void t4() throws Exception {
         long targetId = 1;
         String title = "제목 수정";
         String content = "내용 수정";

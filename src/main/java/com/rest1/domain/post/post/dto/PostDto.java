@@ -8,8 +8,8 @@ public record PostDto(
         Long id,
         LocalDateTime createDate,
         LocalDateTime modifyDate,
-        String subject,
-        String body
+        String title,
+        String content
 ) {
     public PostDto(Post post) {
         this(

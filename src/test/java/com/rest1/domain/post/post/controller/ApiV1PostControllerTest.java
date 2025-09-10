@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,13 +57,15 @@ public class ApiV1PostControllerTest {
                 )
                 .andDo(print());
 
+        Post post = postRepository.findById(targetId).get();
+
         resultActions
                 .andExpect(handler().handlerType(ApiV1PostController.class))
                 .andExpect(handler().methodName("getItem"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.createDate").exists())
-                .andExpect(jsonPath("$.modifyDate").exists())
+                .andExpect(jsonPath("$.createDate").value(matchesPattern(post.getCreateDate().toString().replaceAll("0+$", "") + ".*")))
+                .andExpect(jsonPath("$.modifyDate").value(matchesPattern(post.getModifyDate().toString().replaceAll("0+$", "") + ".*")))
                 .andExpect(jsonPath("$.title").value("제목1"))
                 .andExpect(jsonPath("$.content").value("내용1"));
     }

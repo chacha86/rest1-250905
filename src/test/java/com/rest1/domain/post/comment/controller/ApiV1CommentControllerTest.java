@@ -145,4 +145,30 @@ public class ApiV1CommentControllerTest {
 
         assertThat(comment.getContent()).isEqualTo(content);
     }
+
+    @Test
+    @DisplayName("댓글 삭제 - 1번 글의 1번 댓글 삭제")
+    void t5() throws Exception {
+        long targetPostId = 1;
+        long targetCommentId = 1;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/api/v1/posts/%d/comments/%d".formatted(targetPostId, targetCommentId))
+                )
+                .andDo(print());
+
+        // 필수 검증
+        resultActions
+                .andExpect(handler().handlerType(ApiV1CommentController.class))
+                .andExpect(handler().methodName("deleteItem"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("%d번 댓글이 삭제되었습니다.".formatted(targetCommentId)));
+
+        // 선택적 검증
+        Post post = postRepository.findById(targetPostId).orElse(null);
+        Comment comment = post.findCommentById(targetCommentId).orElse(null);
+        assertThat(comment).isNull();
+    }
 }

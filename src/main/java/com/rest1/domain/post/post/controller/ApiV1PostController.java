@@ -24,7 +24,7 @@ public class ApiV1PostController {
     @GetMapping
     @Transactional(readOnly = true)
     public List<PostDto> getItems() {
-        return postService.findAll().stream()
+        return postService.findAll().reversed().stream()
                 .map(PostDto::new)
                 .toList();
     }

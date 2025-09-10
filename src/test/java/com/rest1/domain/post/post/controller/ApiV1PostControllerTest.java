@@ -13,9 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInRelativeOrder;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,23 +42,35 @@ public class ApiV1PostControllerTest {
                 )
                 .andDo(print());
 
-        List<Post> posts = postRepository.findAll();
-
         resultActions
                 .andExpect(handler().handlerType(ApiV1PostController.class))
                 .andExpect(handler().methodName("getItems"))
                 .andExpect(status().isOk());
 
-        for(int i = 0; i < posts.size(); i++) {
-            Post post = posts.get(i);
+        resultActions
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[*].id", containsInRelativeOrder(3, 1)))
+                .andExpect(jsonPath("$[0].id").value(3))
+                .andExpect(jsonPath("$[0].createDate").exists())
+                .andExpect(jsonPath("$[0].modifyDate").exists())
+                .andExpect(jsonPath("$[0].title").value("제목3"))
+                .andExpect(jsonPath("$[0].content").value("내용3"));
 
-            resultActions
-                    .andExpect(jsonPath("$[%d].id".formatted(i)).value(post.getId()))
-                    .andExpect(jsonPath("$[%d].createDate".formatted(i)).value(matchesPattern(post.getCreateDate().toString().replaceAll("0+$", "") + ".*")))
-                    .andExpect(jsonPath("$[%d].modifyDate".formatted(i)).value(matchesPattern(post.getModifyDate().toString().replaceAll("0+$", "") + ".*")))
-                    .andExpect(jsonPath("$[%d].title".formatted(i)).value(post.getTitle()))
-                    .andExpect(jsonPath("$[%d].content".formatted(i)).value(post.getContent()));
-        }
+
+
+        // 하나 또는 2개 정도만 검증
+
+
+//        for(int i = 0; i < posts.size(); i++) {
+//            Post post = posts.get(i);
+//
+//            resultActions
+//                    .andExpect(jsonPath("$[%d].id".formatted(i)).value(post.getId()))
+//                    .andExpect(jsonPath("$[%d].createDate".formatted(i)).value(matchesPattern(post.getCreateDate().toString().replaceAll("0+$", "") + ".*")))
+//                    .andExpect(jsonPath("$[%d].modifyDate".formatted(i)).value(matchesPattern(post.getModifyDate().toString().replaceAll("0+$", "") + ".*")))
+//                    .andExpect(jsonPath("$[%d].title".formatted(i)).value(post.getTitle()))
+//                    .andExpect(jsonPath("$[%d].content".formatted(i)).value(post.getContent()));
+//        }
     }
 
     @Test

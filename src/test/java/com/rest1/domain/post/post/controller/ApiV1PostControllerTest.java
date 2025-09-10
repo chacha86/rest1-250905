@@ -118,7 +118,14 @@ public class ApiV1PostControllerTest {
                 .andDo(print());
 
         resultActions
-                .andExpect(status().isCreated());
+                .andExpect(handler().handlerType(ApiV1PostController.class))
+                .andExpect(handler().methodName("createItem"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.postDto.id").value(4))
+                .andExpect(jsonPath("$.data.postDto.createDate").exists())
+                .andExpect(jsonPath("$.data.postDto.modifyDate").exists())
+                .andExpect(jsonPath("$.data.postDto.title").value(title))
+                .andExpect(jsonPath("$.data.postDto.content").value(content));
     }
 
 

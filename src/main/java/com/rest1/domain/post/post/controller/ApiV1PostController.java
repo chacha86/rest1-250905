@@ -66,8 +66,7 @@ public class ApiV1PostController {
     }
 
     record PostWriteResBody(
-            PostDto postDto,
-            long totalCount
+            PostDto postDto
     ) {}
 
     @PostMapping
@@ -84,8 +83,7 @@ public class ApiV1PostController {
                 "201-1",
                 "%d번 게시물이 생성되었습니다.".formatted(post.getId()),
                 new PostWriteResBody(
-                        new PostDto(post),
-                        totalCount
+                        new PostDto(post)
                 )
         );
     }

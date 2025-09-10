@@ -35,8 +35,10 @@ public class ApiV1PostController {
     public PostDto getItem(
             @PathVariable Long id
     ) {
+
         Post post = postService.findById(id).get();
         return new PostDto(post);
+
     }
 
 
@@ -67,7 +69,8 @@ public class ApiV1PostController {
 
     record PostWriteResBody(
             PostDto postDto
-    ) {}
+    ) {
+    }
 
     @PostMapping
     @Transactional
@@ -78,7 +81,7 @@ public class ApiV1PostController {
         long totalCount = postService.count();
 
         System.out.println("createItem 메서드 실행");
-        
+
         return new RsData<>(
                 "201-1",
                 "%d번 게시물이 생성되었습니다.".formatted(post.getId()),
@@ -106,6 +109,7 @@ public class ApiV1PostController {
             @PathVariable Long id,
             @RequestBody @Valid PostModifyReqBody reqBody
     ) {
+
         Post post = postService.findById(id).get();
         postService.modify(post, reqBody.title, reqBody.content);
 

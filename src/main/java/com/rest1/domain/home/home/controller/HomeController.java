@@ -34,11 +34,11 @@ public class HomeController {
                 <script>
                     console.clear();
                     
-                    fetch("http://localhost:8080/api/v1/posts")
+                    fetch("/api/v1/posts")
                     .then(response => response.json())
                     .then(data => console.log(data))
                     
-                    fetch("http://localhost:8080/api/v1/posts/1")
+                    fetch("/api/v1/posts/2")
                     .then(response => response.json())
                     .then(data => console.log(data))
                     

@@ -21,7 +21,7 @@ public class ApiV1CommentController {
 
     private final PostService postService;
 
-    @GetMapping("/{postId}/comments")
+    @GetMapping(value = "/{postId}/comments")
     public List<CommentDto> getItems(
             @PathVariable Long postId
     ) {
@@ -31,7 +31,7 @@ public class ApiV1CommentController {
                 .toList();
     }
 
-    @GetMapping("/{postId}/comments/{commentId}")
+    @GetMapping(value = "/{postId}/comments/{commentId}")
     @Transactional(readOnly = true)
     public CommentDto getItem(
             @PathVariable Long postId,

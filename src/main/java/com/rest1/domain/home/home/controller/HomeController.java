@@ -1,5 +1,6 @@
 package com.rest1.domain.home.home.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,6 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @RestController
+@Tag(name="Home", description = "홈 컨트롤러")
 public class HomeController {
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)

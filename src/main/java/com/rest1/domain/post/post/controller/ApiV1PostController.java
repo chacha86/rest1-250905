@@ -4,6 +4,8 @@ import com.rest1.domain.post.post.dto.PostDto;
 import com.rest1.domain.post.post.entity.Post;
 import com.rest1.domain.post.post.service.PostService;
 import com.rest1.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
+@Tag(name = "ApiV1PostController", description = "글 API")
 public class ApiV1PostController {
 
     private final PostService postService;
@@ -23,6 +26,7 @@ public class ApiV1PostController {
 
     @GetMapping
     @Transactional(readOnly = true)
+    @Operation(summary = "글 다건 조회")
     public List<PostDto> getItems() {
         return postService.findAll().reversed().stream()
                 .map(PostDto::new)
@@ -32,6 +36,7 @@ public class ApiV1PostController {
 
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
+    @Operation(summary = "글 단건 조회")
     public PostDto getItem(
             @PathVariable Long id
     ) {
@@ -43,6 +48,7 @@ public class ApiV1PostController {
 
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "글 삭제")
     public RsData<Void> deleteItem(
             @PathVariable Long id
     ) {
@@ -74,6 +80,7 @@ public class ApiV1PostController {
 
     @PostMapping
     @Transactional
+    @Operation(summary = "글 작성")
     public RsData<PostWriteResBody> createItem(
             @RequestBody @Valid PostWriteReqBody reqBody
     ) {
@@ -105,6 +112,7 @@ public class ApiV1PostController {
 
     @PutMapping("/{id}")
     @Transactional
+    @Operation(summary = "글 수정")
     public RsData<Void> modifyItem(
             @PathVariable Long id,
             @RequestBody @Valid PostModifyReqBody reqBody
